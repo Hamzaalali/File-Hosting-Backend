@@ -5,6 +5,6 @@ import com.example.demo.general.exception.CustomException;
 public class InvalidPassword extends CustomException {
 
     public InvalidPassword() {
-        super(400, 5, "invalid password");
+        super(403, 5, "Invalid Password");
     }
 }

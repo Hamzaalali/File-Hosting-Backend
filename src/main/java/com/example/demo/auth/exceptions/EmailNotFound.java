@@ -4,6 +4,6 @@ import com.example.demo.general.exception.CustomException;
 
 public class EmailNotFound extends CustomException {
     public EmailNotFound() {
-        super(204, 2, "an account with this email doesn't exists");
+        super(403, 2, "Email Not Found");
     }
 }

@@ -28,10 +28,4 @@ public class File {
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User createdBy;
-
-    public void updateFile(UpdateFileRequest updateFileRequest){
-        fileName=updateFileRequest.getFileName();
-        Calendar cal = Calendar.getInstance();
-        updatedAt=new Timestamp(cal.getTimeInMillis()).toString();
-    }
 }

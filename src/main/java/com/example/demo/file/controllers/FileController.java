@@ -52,20 +52,9 @@ public class FileController {
         User user= AuthUtils.getUserFromRequest(request);
         return new ResponseEntity<>(fileService.getFiles(user), HttpStatus.OK);
     }
-
-    @Authenticate
-    @PutMapping("/{id}")
-    ResponseEntity<File> update(@RequestBody() UpdateFileRequest updateFileRequest,@PathVariable("id")Long fileId){
-        File fileRecord=fileService.updateFile(updateFileRequest,fileId);
-        if(fileRecord==null){
-            throw new IllegalArgumentException();
-        }
-        return new ResponseEntity<>(fileRecord, HttpStatus.OK);
-    }
     @Authenticate
     @PostMapping("/{id}/delete")
     ResponseEntity<Object> delete(@PathVariable("id")Long fileId){
-        System.out.println(fileId);
         fileService.deleteFile(fileId);
         return ResponseEntity.ok().build();
     }
@@ -76,7 +65,6 @@ public class FileController {
         File fileRecord=fileService.getFile(user , fileId);
         java.io.File file=new java.io.File(fileRecord.getUrl());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-        System.out.println(file.getAbsolutePath());
         return ResponseEntity.ok()
                 .contentLength(file.length())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM).contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -37,7 +37,6 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody() LoginRequest loginRequest) throws Exception {
-        System.out.println(loginRequest);
         Map<String ,String> refreshAndAccess=authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
         return new ResponseEntity<>(refreshAndAccess, HttpStatus.ACCEPTED);
     }
@@ -45,7 +44,6 @@ public class AuthenticationController {
     @PostMapping("/refresh")
     public ResponseEntity<Object> refresh(@Valid @RequestBody RefreshRequest refreshRequest) throws InvalidRefreshToken, Forbidden {
         Map<String ,String> accessTokenObject=authenticationService.refresh(refreshRequest.getRefreshToken());
-        System.out.println("refresh");
         return new ResponseEntity<>(accessTokenObject,HttpStatus.ACCEPTED);
     }
 

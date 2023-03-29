@@ -9,16 +9,22 @@ import com.example.demo.auth.requests.RegisterRequest;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.*;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserService userService;
     private final UserTokensRepo userTokensRepo;
-
+    @Value( "${accessTokenSecret}" )
+    String accessTokenSecret;
+    @Value( "${refreshTokenSecret}" )
+    String refreshTokenSecret;
     public User registerUser(RegisterRequest registerRequest) throws EmailAlreadyExists {
+        if(registerRequest==null){
+            throw new IllegalArgumentException();
+        }
         User user = new User();
         user.setEmail(registerRequest.getEmail());
         user.setUserName(registerRequest.getUserName());
@@ -27,9 +33,10 @@ public class AuthenticationService {
         user.setHash(hash);
         return userService.createUser(user);
     }
-
     public Map<String, String> login(String email, String password) throws Exception {
-
+        if(email==null || password==null){
+            throw new IllegalArgumentException();
+        }
         User user = userService.findUserByEmail(email);
         if (user == null) {
             throw new EmailNotFound();
@@ -51,15 +58,18 @@ public class AuthenticationService {
     }
 
     public Map<String, String> refresh(String refreshToken) throws InvalidRefreshToken, Forbidden {
+        if(refreshToken==null){
+            throw new IllegalArgumentException();
+        }
         try {
-            DecodedJWT decodedJWT = validToken(refreshToken, "refresh_token_secret");
+            DecodedJWT decodedJWT = validRefreshToken(refreshToken);
             User user = userService.findUserById(decodedJWT.getClaim("id").asLong());
             UserTokens userTokens = userTokensRepo.findUserTokensByUser(user);
             try {
                 if (!Objects.equals(refreshToken, userTokens.getRefreshToken())) {
                     throw new Forbidden();
                 }
-                validToken(userTokens.getAccessToken(), "access_token_secret");
+                validAccessToken(userTokens.getAccessToken());
                 throw new Forbidden();
             } catch (Forbidden e) {
                 deleteTokens(user);
@@ -81,12 +91,21 @@ public class AuthenticationService {
     }
 
     private String generateAccessToken(User user) {
-        return generateJwtToken(user, (long) 1000 *60* 15, "access_token_secret");
+        if(user==null){
+            throw new IllegalArgumentException();
+        }
+        return generateJwtToken(user, (long) 1000 *60* 15, accessTokenSecret);
     }
     private String generateRefreshToken(User user) {
-        return generateJwtToken(user, (long) 1000 * 60 *60*60, "refresh_token_secret");
+        if(user==null){
+            throw new IllegalArgumentException();
+        }
+        return generateJwtToken(user, (long) 1000 * 60 *60*60, refreshTokenSecret);
     }
     private String generateJwtToken(User user, Long timeInMilliSecond, String secret) {
+        if(user==null || timeInMilliSecond==null || secret==null){
+            throw new IllegalArgumentException();
+        }
         Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
         String token = JWT.create()
                 .withClaim("email", user.getEmail())
@@ -96,16 +115,27 @@ public class AuthenticationService {
                 .sign(algorithm);
         return token;
     }
-
-    public DecodedJWT validToken(String token, String secret) {
+    public DecodedJWT validAccessToken(String token){
+        return UserFromAccessToken(token, accessTokenSecret);
+    }
+    public DecodedJWT validRefreshToken(String token){
+        return UserFromAccessToken(token, refreshTokenSecret);
+    }
+    public DecodedJWT UserFromAccessToken(String token, String secret) {
+        if(secret==null || token==null){
+            throw new IllegalArgumentException();
+        }
         Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         return decodedJWT;
     }
-    public User validToken(String token) throws InvalidAccessToken {
+    public User UserFromAccessToken(String token) throws InvalidAccessToken {
+        if(token==null){
+            throw new IllegalArgumentException();
+        }
         try{
-            DecodedJWT decodedJWT =   validToken(token,"access_token_secret");
+            DecodedJWT decodedJWT =   UserFromAccessToken(token,accessTokenSecret);
             Long id = decodedJWT.getClaim("id").asLong();
             User user = userService.findUserById(id);
             UserTokens userTokens = userTokensRepo.findUserTokensByUser(user);
@@ -118,6 +148,9 @@ public class AuthenticationService {
         }
     }
     public void logout(User user) throws FailedToLogout {
+        if(user==null){
+            throw new IllegalArgumentException();
+        }
         try {
             deleteTokens(user);
         } catch (Exception e) {
@@ -126,6 +159,9 @@ public class AuthenticationService {
     }
 
     private void deleteTokens(User user) {
+        if(user==null){
+            throw new IllegalArgumentException();
+        }
         UserTokens userTokens = userTokensRepo.findUserTokensByUser(user);
         userTokens.setRefreshToken("");
         userTokens.setAccessToken("");

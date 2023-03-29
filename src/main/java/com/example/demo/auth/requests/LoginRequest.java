@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class LoginRequest {
-    @NotEmpty(message = "Email can't be empty")
+    @NotEmpty(message = "Email Can't Be Empty")
     @Email
     String email;
-    @NotEmpty (message = "Password can't be empty")
+    @NotEmpty (message = "Password Can't Be Empty")
     String password;
 }

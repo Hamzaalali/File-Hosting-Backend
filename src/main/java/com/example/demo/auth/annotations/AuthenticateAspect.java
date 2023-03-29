@@ -19,7 +19,7 @@ public class AuthenticateAspect {
     @Before(value = "@annotation(authenticate)", argNames = "authenticate")
     public void preHandle(Authenticate authenticate) throws InvalidAccessToken {
         String token= AuthUtils.getToken(request);
-        User user=authenticationService.validToken(token);
+        User user=authenticationService.UserFromAccessToken(token);
         request.setAttribute("user",user);
     }
 }

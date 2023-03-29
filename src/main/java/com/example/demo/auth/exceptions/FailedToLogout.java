@@ -4,6 +4,6 @@ import com.example.demo.general.exception.CustomException;
 
 public class FailedToLogout extends CustomException {
     public FailedToLogout() {
-        super(400, 3, "an error occured during logout");
+        super(403, 3, "Logout Failed");
     }
 }

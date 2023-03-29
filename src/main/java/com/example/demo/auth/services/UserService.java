@@ -12,6 +12,9 @@ public class UserService {
     private final UserRepo userRepo;
     private final UserTokensRepo userTokensRepo;
     public User createUser(User user) throws EmailAlreadyExists {
+        if(user==null){
+            throw new IllegalArgumentException();
+        }
         User userWithEmail=findUserByEmail(user.getEmail());
         if(userWithEmail!=null){
             throw new EmailAlreadyExists();
@@ -22,14 +25,17 @@ public class UserService {
         userTokensRepo.save(userTokens);
         return registeredUser;
     }
-    public List<User> getUsers(){
-        return userRepo.findAll();
-    }
     public User findUserById(Long id){
+        if(id==null){
+            throw new IllegalArgumentException();
+        }
         User user= userRepo.findUserById(id);
         return user;
     }
     public User findUserByEmail(String email){
+        if(email==null){
+            throw new IllegalArgumentException();
+        }
         User user= userRepo.findUserByEmail(email);
         return user;
     }

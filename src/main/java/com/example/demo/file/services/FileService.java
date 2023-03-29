@@ -44,14 +44,6 @@ public class FileService {
         return fileRepository.getFilesByCreatedBy(user);
     }
 
-    public File updateFile(UpdateFileRequest updateFileRequest,Long fileId) {
-        if(fileId==null || updateFileRequest==null){
-            throw new IllegalArgumentException();
-        }
-        File fileRecord=fileRepository.findById(fileId).orElseThrow(NoSuchElementException::new);
-        fileRecord.updateFile(updateFileRequest);
-        return fileRepository.save(fileRecord);
-    }
 
     public void deleteFile(Long fileId) {//ONLY soft delete , files will be kept in the local storage
         if(fileId==null){
