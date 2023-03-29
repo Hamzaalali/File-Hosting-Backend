@@ -40,8 +40,8 @@ public class FileService {
         return fileRepository.save(fileRecord);
     }
 
-    public List<File> getFiles() {
-        return fileRepository.findAll();
+    public List<File> getFiles(User user) {
+        return fileRepository.getFilesByCreatedBy(user);
     }
 
     public File updateFile(UpdateFileRequest updateFileRequest,Long fileId) {
@@ -53,10 +53,17 @@ public class FileService {
         return fileRepository.save(fileRecord);
     }
 
-    public void deleteFile(Long fileId) {
+    public void deleteFile(Long fileId) {//ONLY soft delete , files will be kept in the local storage
         if(fileId==null){
             throw new IllegalArgumentException();
         }
         fileRepository.deleteById(fileId);
+    }
+
+    public File getFile(User user, Long fileId) {
+        if(user==null || fileId==null){
+            throw new IllegalArgumentException();
+        }
+        return fileRepository.findById(fileId).orElseThrow(NoSuchElementException::new);
     }
 }

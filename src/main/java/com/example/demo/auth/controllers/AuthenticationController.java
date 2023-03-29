@@ -1,10 +1,10 @@
 package com.example.demo.auth.controllers;
 import com.example.demo.auth.annotations.Authenticate;
 import com.example.demo.auth.entities.User;
-import com.example.demo.auth.exceptions.Authentication.EmailAlreadyExists;
-import com.example.demo.auth.exceptions.Authentication.FailedToLogout;
-import com.example.demo.auth.exceptions.Authentication.InvalidRefreshToken;
-import com.example.demo.auth.exceptions.Authentication.Forbidden;
+import com.example.demo.auth.exceptions.EmailAlreadyExists;
+import com.example.demo.auth.exceptions.FailedToLogout;
+import com.example.demo.auth.exceptions.InvalidRefreshToken;
+import com.example.demo.auth.exceptions.Forbidden;
 import com.example.demo.auth.requests.LoginRequest;
 import com.example.demo.auth.requests.RefreshRequest;
 import com.example.demo.auth.requests.RegisterRequest;

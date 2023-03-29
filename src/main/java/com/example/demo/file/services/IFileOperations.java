@@ -9,5 +9,4 @@ import java.io.InputStream;
 
 public interface IFileOperations {
     String uploadFile(MultipartFile file,String fileId) throws IOException;
-    void deleteFile(String fileId);
 }

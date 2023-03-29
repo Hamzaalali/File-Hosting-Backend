@@ -1,6 +1,6 @@
 package com.example.demo.auth.Utils;
 import com.example.demo.auth.entities.User;
-import com.example.demo.auth.exceptions.Authentication.InvalidAccessToken;
+import com.example.demo.auth.exceptions.InvalidAccessToken;
 import jakarta.servlet.http.HttpServletRequest;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

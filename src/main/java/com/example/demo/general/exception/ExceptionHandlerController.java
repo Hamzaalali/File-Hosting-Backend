@@ -1,4 +1,4 @@
-package com.example.demo.auth.exceptions;
+package com.example.demo.general.exception;
 
 import com.example.demo.general.exception.CustomException;
 import jakarta.validation.ConstraintViolation;
@@ -19,7 +19,6 @@ public class ExceptionHandlerController {
         String error=ex.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class).getMessage();
         ErrorDto dto = new ErrorDto(0, error);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
-
     }
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorDto> handleException(CustomException ex) {

@@ -1,11 +1,10 @@
 package com.example.demo.auth.services;
 import com.example.demo.auth.entities.*;
-import com.example.demo.auth.exceptions.Authentication.EmailAlreadyExists;
+import com.example.demo.auth.exceptions.EmailAlreadyExists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

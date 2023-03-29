@@ -1,4 +1,4 @@
-package com.example.demo.auth.exceptions.Authentication;
+package com.example.demo.auth.exceptions;
 
 import com.example.demo.general.exception.CustomException;
 

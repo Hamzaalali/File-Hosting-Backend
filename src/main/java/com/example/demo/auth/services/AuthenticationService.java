@@ -4,8 +4,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.auth.entities.*;
-import com.example.demo.auth.exceptions.Authentication.*;
-import com.example.demo.auth.exceptions.Authentication.Forbidden;
+import com.example.demo.auth.exceptions.*;
 import com.example.demo.auth.requests.RegisterRequest;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -82,10 +81,10 @@ public class AuthenticationService {
     }
 
     private String generateAccessToken(User user) {
-        return generateJwtToken(user, (long) 1000 *60* 60 * 5, "access_token_secret");
+        return generateJwtToken(user, (long) 1000 *60* 15, "access_token_secret");
     }
     private String generateRefreshToken(User user) {
-        return generateJwtToken(user, (long) 1000 * 60 *60, "refresh_token_secret");
+        return generateJwtToken(user, (long) 1000 * 60 *60*60, "refresh_token_secret");
     }
     private String generateJwtToken(User user, Long timeInMilliSecond, String secret) {
         Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());

@@ -1,7 +1,7 @@
 package com.example.demo.auth.annotations;
 import com.example.demo.auth.Utils.AuthUtils;
 import com.example.demo.auth.entities.User;
-import com.example.demo.auth.exceptions.Authentication.InvalidAccessToken;
+import com.example.demo.auth.exceptions.InvalidAccessToken;
 import com.example.demo.auth.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
