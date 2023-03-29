@@ -2,6 +2,7 @@ package com.example.demo.file.services;
 
 import com.example.demo.auth.entities.User;
 import com.example.demo.file.entities.File;
+import com.example.demo.file.exceptions.UploadFailedException;
 import com.example.demo.file.repositories.FileRepository;
 import com.example.demo.file.requests.UpdateFileRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,21 +24,25 @@ import java.util.UUID;
 public class FileService {
     private final FileRepository fileRepository;
     private final IFileOperations fileOperations;
-    public File createAndUploadFile(MultipartFile file, String fileName, User user) throws IOException {
+    public File createAndUploadFile(MultipartFile file, String fileName, User user) throws UploadFailedException {
         if(file==null || fileName==null || user==null){
             throw new IllegalArgumentException();
         }
         Calendar cal = Calendar.getInstance();
         UUID uuid=UUID.randomUUID();
-        String url=fileOperations.uploadFile(file,uuid.toString());
-        File fileRecord=File.builder()
-                .createdBy(user)
-                .fileName(fileName)
-                .url(url)
-                .createdAt(new Timestamp(cal.getTimeInMillis()).toString())
-                .updatedAt(new Timestamp(cal.getTimeInMillis()).toString())
-                .build();
-        return fileRepository.save(fileRecord);
+        try{
+            String url=fileOperations.uploadFile(file,uuid.toString());
+            File fileRecord=File.builder()
+                    .createdBy(user)
+                    .fileName(fileName)
+                    .url(url)
+                    .createdAt(new Timestamp(cal.getTimeInMillis()).toString())
+                    .updatedAt(new Timestamp(cal.getTimeInMillis()).toString())
+                    .build();
+            return fileRepository.save(fileRecord);
+        } catch (IOException e) {
+            throw new UploadFailedException();
+        }
     }
 
     public List<File> getFiles(User user) {

@@ -14,6 +14,7 @@ public class LocalFileOperations implements IFileOperations {
 
     @Override
     public String uploadFile(MultipartFile file, String fileId) throws IOException {
+
         String localUrl = storageUrl + fileId;
         File localFile = new File(localUrl + "." + file.getOriginalFilename().split("\\.")[1]);
         try (OutputStream os = new FileOutputStream(localFile)) {

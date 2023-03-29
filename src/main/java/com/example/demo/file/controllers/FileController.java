@@ -3,6 +3,7 @@ import com.example.demo.auth.Utils.AuthUtils;
 import com.example.demo.auth.annotations.Authenticate;
 import com.example.demo.auth.entities.User;
 import com.example.demo.file.entities.File;
+import com.example.demo.file.exceptions.UploadFailedException;
 import com.example.demo.file.requests.UpdateFileRequest;
 import com.example.demo.file.services.FileService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +37,7 @@ public class FileController {
 
     @Authenticate
     @PostMapping("/")
-    ResponseEntity<Object> upload(HttpServletRequest request,@RequestParam("file")MultipartFile file, @RequestParam("fileName") String fileName) throws URISyntaxException, IOException {
+    ResponseEntity<Object> upload(HttpServletRequest request,@RequestParam("file")MultipartFile file, @RequestParam("fileName") String fileName) throws URISyntaxException, IOException, UploadFailedException {
         User user= AuthUtils.getUserFromRequest(request);
         File fileRecord=fileService.createAndUploadFile(file,fileName,user);
         if(fileRecord==null){
