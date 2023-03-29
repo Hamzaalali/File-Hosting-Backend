@@ -62,32 +62,36 @@ public class AuthenticationService {
             throw new IllegalArgumentException();
         }
         try {
-            DecodedJWT decodedJWT = validRefreshToken(refreshToken);
-            User user = userService.findUserById(decodedJWT.getClaim("id").asLong());
-            UserTokens userTokens = userTokensRepo.findUserTokensByUser(user);
-            try {
-                if (!Objects.equals(refreshToken, userTokens.getRefreshToken())) {
-                    throw new Forbidden();
-                }
-                validAccessToken(userTokens.getAccessToken());
-                throw new Forbidden();
-            } catch (Forbidden e) {
-                deleteTokens(user);
-                throw new Forbidden();
-            } catch (Exception e) {
-                //ignore
-            }
-            String accessToken = generateAccessToken(user);
-            userTokens.setAccessToken(accessToken);
-            userTokensRepo.save(userTokens);
-            Map<String, String> accessTokenObject = new HashMap<>();
-            accessTokenObject.put("accessToken", accessToken);
-            return accessTokenObject;
+            return getNewAccessToken(refreshToken);
         } catch (Forbidden e) {
             throw new Forbidden();
         } catch (Exception e) {
             throw new InvalidRefreshToken();
         }
+    }
+
+    private Map<String, String> getNewAccessToken(String refreshToken) throws Forbidden {
+        DecodedJWT decodedJWT = validRefreshToken(refreshToken);
+        User user = userService.findUserById(decodedJWT.getClaim("id").asLong());
+        UserTokens userTokens = userTokensRepo.findUserTokensByUser(user);
+        try {
+            if (!Objects.equals(refreshToken, userTokens.getRefreshToken())) {
+                throw new Forbidden();
+            }
+            validAccessToken(userTokens.getAccessToken());
+            throw new Forbidden();
+        } catch (Forbidden e) {
+            deleteTokens(user);
+            throw new Forbidden();
+        } catch (Exception e) {
+            //ignore
+        }
+        String accessToken = generateAccessToken(user);
+        userTokens.setAccessToken(accessToken);
+        userTokensRepo.save(userTokens);
+        Map<String, String> accessTokenObject = new HashMap<>();
+        accessTokenObject.put("accessToken", accessToken);
+        return accessTokenObject;
     }
 
     private String generateAccessToken(User user) {
