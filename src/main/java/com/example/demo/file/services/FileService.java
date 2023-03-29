@@ -30,19 +30,16 @@ public class FileService {
         }
         Calendar cal = Calendar.getInstance();
         UUID uuid=UUID.randomUUID();
-        try{
-            String url=fileOperations.uploadFile(file,uuid.toString());
-            File fileRecord=File.builder()
-                    .createdBy(user)
-                    .fileName(fileName)
-                    .url(url)
-                    .createdAt(new Timestamp(cal.getTimeInMillis()).toString())
-                    .updatedAt(new Timestamp(cal.getTimeInMillis()).toString())
-                    .build();
-            return fileRepository.save(fileRecord);
-        } catch (IOException e) {
-            throw new UploadFailedException();
-        }
+        String url=fileOperations.uploadFile(file,uuid.toString());
+        File fileRecord=File.builder()
+                .createdBy(user)
+                .fileName(fileName)
+                .url(url)
+                .createdAt(new Timestamp(cal.getTimeInMillis()).toString())
+                .updatedAt(new Timestamp(cal.getTimeInMillis()).toString())
+                .build();
+        return fileRepository.save(fileRecord);
+
     }
 
     public List<File> getFiles(User user) {
