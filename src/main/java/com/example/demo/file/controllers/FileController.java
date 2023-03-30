@@ -2,6 +2,7 @@ package com.example.demo.file.controllers;
 import com.example.demo.auth.Utils.AuthUtils;
 import com.example.demo.auth.annotations.Authenticate;
 import com.example.demo.auth.entities.User;
+import com.example.demo.auth.exceptions.Forbidden;
 import com.example.demo.file.entities.File;
 import com.example.demo.file.exceptions.UploadFailedException;
 import com.example.demo.file.requests.UpdateFileRequest;
@@ -61,7 +62,7 @@ public class FileController {
     }
     @Authenticate
     @GetMapping("/{id}")
-    public ResponseEntity<Resource> get(HttpServletRequest request,@PathVariable("id")Long fileId) throws IOException {
+    public ResponseEntity<Resource> get(HttpServletRequest request,@PathVariable("id")Long fileId) throws IOException, Forbidden {
         User user= AuthUtils.getUserFromRequest(request);
         File fileRecord=fileService.getFile(user , fileId);
         java.io.File file=new java.io.File(fileRecord.getUrl());

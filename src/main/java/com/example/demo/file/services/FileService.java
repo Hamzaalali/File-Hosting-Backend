@@ -1,6 +1,7 @@
 package com.example.demo.file.services;
 
 import com.example.demo.auth.entities.User;
+import com.example.demo.auth.exceptions.Forbidden;
 import com.example.demo.file.entities.File;
 import com.example.demo.file.exceptions.UploadFailedException;
 import com.example.demo.file.repositories.FileRepository;
@@ -54,10 +55,15 @@ public class FileService {
         fileRepository.deleteById(fileId);
     }
 
-    public File getFile(User user, Long fileId) {
+    public File getFile(User user, Long fileId) throws Forbidden {
         if(user==null || fileId==null){
             throw new IllegalArgumentException();
         }
-        return fileRepository.findById(fileId).orElseThrow(NoSuchElementException::new);
+        File fileRecord=fileRepository.findById(fileId).orElseThrow(NoSuchElementException::new);
+        if(fileRecord.getCreatedBy().getId()!=user.getId())
+        {
+            throw new Forbidden();
+        }
+        return fileRecord;
     }
 }
