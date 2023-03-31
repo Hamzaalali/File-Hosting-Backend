@@ -15,10 +15,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,21 +35,24 @@ public class FileService {
                 .url(url)
                 .createdAt(new Timestamp(cal.getTimeInMillis()).toString())
                 .updatedAt(new Timestamp(cal.getTimeInMillis()).toString())
+                .deleted(false)
                 .build();
         return fileRepository.save(fileRecord);
 
     }
 
     public List<File> getFiles(User user) {
-        return fileRepository.getFilesByCreatedBy(user);
+        return fileRepository.getFilesByCreatedByAndDeletedIs(user,false);
     }
 
 
-    public void deleteFile(Long fileId) {//ONLY soft delete , files will be kept in the local storage
+    public void deleteFile(User user,Long fileId) throws Forbidden {//ONLY soft delete , files will be kept in the local storage
         if(fileId==null){
             throw new IllegalArgumentException();
         }
-        fileRepository.deleteById(fileId);
+        File fileRecord=getFile(user,fileId);
+        fileRecord.setDeleted(true);
+        fileRepository.save(fileRecord);
     }
 
     public File getFile(User user, Long fileId) throws Forbidden {
@@ -60,7 +60,7 @@ public class FileService {
             throw new IllegalArgumentException();
         }
         File fileRecord=fileRepository.findById(fileId).orElseThrow(NoSuchElementException::new);
-        if(fileRecord.getCreatedBy().getId()!=user.getId())
+        if(!Objects.equals(fileRecord.getCreatedBy().getId(), user.getId()))
         {
             throw new Forbidden();
         }

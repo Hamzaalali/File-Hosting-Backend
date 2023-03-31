@@ -56,8 +56,9 @@ public class FileController {
     }
     @Authenticate
     @PostMapping("/{id}/delete")
-    ResponseEntity<Object> delete(@PathVariable("id")Long fileId){
-        fileService.deleteFile(fileId);
+    ResponseEntity<Object> delete(HttpServletRequest request,@PathVariable("id")Long fileId) throws Forbidden {
+        User user= AuthUtils.getUserFromRequest(request);
+        fileService.deleteFile(user,fileId);
         return ResponseEntity.ok().build();
     }
     @Authenticate

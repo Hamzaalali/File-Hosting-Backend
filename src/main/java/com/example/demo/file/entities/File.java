@@ -25,6 +25,7 @@ public class File {
     private String url;
     private String updatedAt;
     private String createdAt;
+    private boolean deleted;
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User createdBy;
